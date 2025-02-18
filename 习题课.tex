@@ -1,0 +1,471 @@
+\documentclass{beamer}
+
+\usepackage{ctex}
+\usepackage{booktabs}
+
+
+
+
+% 选择主题
+\usetheme{Madrid}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[ruled, linesnumbered, boxed]{algorithm2e}
+
+\author{Qirun Zeng、Weixin Chen}
+\date{\today}
+\title{数据结构及其算法习题课}
+
+% \AtBeginSection[]{
+%     \begin{frame}
+%         \frametitle{目录}
+%         \tableofcontents[currentsection]
+%     \end{frame}
+% }
+
+\AtBeginSubsection[]{
+    \begin{frame}
+        \frametitle{目录}
+        \tableofcontents[currentsection, currentsubsection]
+    \end{frame}
+}
+
+\begin{document}
+    \begin{frame}
+        \titlepage
+    \end{frame}
+
+    \section{作业}
+
+    \subsection{线性表}
+
+    \begin{frame}
+        \frametitle{习题 2.6}
+        试写一个算法，对带头结点的单链表实现就地逆置。
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{习题 2.6}
+        试写一个算法，对带头结点的单链表实现就地逆置。
+        \begin{block}{分析}
+            \begin{itemize}
+                \item<1-> 从头结点的下一个结点开始，采用头插法，逐个将后继结点插入到头结点之后
+                \item<2-> 逆置完成后，头结点的后继结点即为原链表的尾结点
+            \end{itemize}
+        \end{block}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{习题 2.6}
+        试写一个算法，对带头结点的单链表实现就地逆置。
+        \begin{algorithm}[H]
+            \caption{就地逆置}
+            \SetKwFunction{Fmain}{Reverse}
+            \SetKwProg{Fn}{Function}{:}{}
+            \Fn{\Fmain{$L$}}{
+                $p \gets L.next$\;
+                $L.next \gets \text{NULL}$\;
+                \While{$p \neq \text{NULL}$}{
+                    $q \gets p.next$\;
+                    $p.next \gets L.next$\;
+                    $L.next \gets p$\;
+                    $p \gets q$\;
+                }
+            }
+        \end{algorithm}
+    \end{frame}
+
+    \subsection{树和二叉树}
+    \begin{frame}
+        \frametitle{编写算法，将二叉树所有左右子树互换}
+        \begin{algorithm}[H]
+            \caption{Mirror}
+            \SetKwFunction{Fmain}{Mirror}
+            \SetKwProg{Fn}{Function}{:}{}
+            \Fn{\Fmain{$T$}}{
+                \If{$T = \text{NULL}$}{
+                    \Return{\text{NULL}}\;
+                }
+                $T.left, T.right \gets \text{Mirror}(T.right), \text{Mirror}(T.left)$\;
+                \Return{$T$}\;
+            }
+        \end{algorithm}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{先序遍历和中序遍历序列构造二叉树}
+        \begin{algorithm}[H]
+            \caption{PreInCreate}
+            \SetKwFunction{Fmain}{PreInCreate}
+            \SetKwProg{Fn}{Function}{:}{}
+            \Fn{\Fmain{$pre$, $in$, $n$}}{
+                \If{$n = 0$}{
+                    \Return{\text{NULL}}\;
+                }
+                $T \gets \text{new Node}$\;
+                $T.data \gets pre[0]$\;
+                $k \gets 0$\;
+                \While{$in[k] \neq pre[0]$}{
+                    $k \gets k+1$\;
+                }
+                $T.left \gets \text{PreInCreate}(pre+1, in, k)$\;
+                $T.right \gets \text{PreInCreate}(pre+k+1, in+k+1, n-k-1)$\;
+                \Return{$T$}\;
+            }
+        \end{algorithm}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{中序遍历和后序遍历序列构造二叉树}
+        \begin{algorithm}[H]
+            \caption{InPostCreate}
+            \SetKwFunction{Fmain}{InPostCreate}
+            \SetKwProg{Fn}{Function}{:}{}
+            \Fn{\Fmain{$in$, $post$, $n$}}{
+                \If{$n = 0$}{
+                    \Return{\text{NULL}}\;
+                }
+                $T \gets \text{new Node}$\;
+                $T.data \gets post[n-1]$\;
+                $k \gets 0$\;
+                \While{$in[k] \neq post[n-1]$}{
+                    $k \gets k+1$\;
+                }
+                $T.left \gets \text{InPostCreate}(in, post, k)$\;
+                $T.right \gets \text{InPostCreate}(in+k+1, post+k, n-k-1)$\;
+                \Return{$T$}\;
+            }
+        \end{algorithm}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{判断一棵树是不是完全二叉树}
+        \begin{algorithm}[H]
+            \caption{IsComplete}
+            \SetKwFunction{Fmain}{IsComplete}
+            \SetKwProg{Fn}{Function}{:}{}
+            \Fn{\Fmain{$T$}}{
+                $Q.push(T), flag \gets \text{false}$\;
+                \While{$Q \neq \text{empty}$}{
+                    $p \gets Q.pop()$\;
+                    \If{$p = \text{NULL}$}{
+                        $flag \gets \text{true}$\;
+                    }
+                    \Else{
+                        \If{$flag$}{
+                            \Return{\text{false}}\;
+                        }
+                        $Q.push(p.left), Q.push(p.right)$\;
+                    }
+                }
+                \Return{\text{true}}\;
+            }
+        \end{algorithm}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{习题 6.4}
+        一棵深度为 $H$ 的满二叉树具有如下性质：第 $H$ 层上所有结点都是叶子结点，其 余各层上每个结点都有 $k$ 棵非空子树。如果从 $1$ 开始按自上而下、自左向右的次序对全部结点编号，问:
+        \begin{enumerate}
+            \item 各层的结点数目是多少?
+            \item 编号为 $i$ 的结点的父结点(若存在)的编号是多少?
+            \item 编号为 $i$ 的结点的第 $j$ 个孩子(若存在)的编号是多少?
+            \item 编号为 $i$ 的结点有右兄弟的条件是什么?其右兄弟的编号是多少?
+        \end{enumerate}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{answer}
+        \begin{enumerate}
+            \item 第 $i$ 层有 $k^{i-1}$ 个结点
+            \item $i$ 的父结点编号为 $\left\lfloor \frac{i-2}{k} \right\rfloor + 1$
+            \item $i \times k + j - k + 1$
+            \item 需要满足：\begin{align}
+                i & \neq \left(\left\lfloor \frac{i-2}{k}\right\rfloor+1\right) \cdot k + k - k + 1 \\
+                i -\left\lfloor \frac{i-2}{k}\right\rfloor \cdot k & \neq k + 1 \\
+                2 + (i-2) \mod k & \neq k + 1 \\
+                i \mod k & \neq 1
+            \end{align}
+        \end{enumerate}
+    \end{frame}
+
+    \subsection{查找}
+    \begin{frame}
+        \frametitle{习题 9.7}
+        判断一棵树是不是二叉排序树
+        \begin{algorithm}[H]
+            \caption{判断二叉排序树}
+            \SetKwFunction{Fmain}{IsBST}
+            \SetKwProg{Fn}{Function}{:}{}
+            \Fn{\Fmain{$T, \text{min}, \text{max}$}}{
+                \If{$T = \text{NULL}$}{
+                    \Return{\text{true}}\;
+                }
+                \If{$T.data \leq \text{min}$ or $T.data \geq \text{max}$}{
+                    \Return{\text{false}}\;
+                }
+                \Return{\text{IsBST}(T.left, \text{min}, T.data) and \text{IsBST}(T.right, T.data, \text{max})}\;
+            }
+        \end{algorithm}
+    \end{frame}
+
+    \subsection{内部排序}
+
+    \begin{frame}
+        \frametitle{习题 10.3}
+        判别以下序列是否为堆（小顶堆或大顶堆），若不是，则把它调整为堆
+        \begin{enumerate} 
+            \item (96,86,48,73,35,39,42,57,66,21);
+            \item (12,70,33,65,24,56,48,92,86,33);
+        \end{enumerate}
+        遇到堆的题目，建议先转化为完全二叉树，判断是否满足堆的性质
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{堆的插入}
+        把堆想象成一个线性表，直接在线性表的末尾插入新元素，然后调整堆的性质。一个结点的父亲的下标为 $i/2$，左儿子的下标为 $2i$，右儿子的下标为 $2i+1$。
+        \begin{algorithm}[H]
+            \caption{Insert}
+            \SetKwFunction{Fmain}{Insert}
+            \SetKwProg{Fn}{Function}{:}{}
+            \Fn{\Fmain{$H$, $x$}}{
+                $H.data[H.size] \gets x$\;
+                $i \gets H.size$\;
+                \While{$i > 1$ and $x < H.data[i/2]$}{
+                    $H.data[i] \gets H.data[i/2]$\;
+                    $i \gets i/2$\;
+                }
+                $H.data[i] \gets x$\;
+                $H.size \gets H.size+1$\;
+            }
+        \end{algorithm}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{堆的删除}
+        删除堆顶元素，把堆的最后一个元素放到堆顶，自上而下调整
+        \begin{algorithm}[H]
+            \caption{Delete}
+            \SetKwFunction{Fmain}{Delete}
+            \SetKwProg{Fn}{Function}{:}{}
+            \Fn{\Fmain{$H$}}{
+                $x \gets H.data[1], y \gets H.data[H.size-1], H.size \gets H.size-1, i \gets 1$\;
+                \While{$2i < H.size$}{
+                    $j \gets 2i$\;
+                    \If{$j < H.size$ and $H.data[j] > H.data[j+1]$}{
+                        $j \gets j+1$\;
+                    }
+                    \If{$y \leq H.data[j]$}{
+                        \textbf{break}\;
+                    }
+                    $H.data[i] \gets H.data[j], i \gets j$\;
+                }
+                $H.data[i] \gets y$\;
+                \Return{$x$}\;
+            }
+        \end{algorithm}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{习题 10.5}
+        \begin{algorithm}[H]
+            \caption{试以单链表为存储结构，实现简单选择排序算法}
+            \SetKwFunction{Fmain}{SelectSort}
+            \SetKwProg{Fn}{Function}{:}{}
+            \Fn{\Fmain{$L$}}{
+                $p \gets L.next$\;
+                \While{$p \neq \text{NULL}$}{
+                    $q \gets p.next$\;
+                    $min \gets p$\;
+                    \While{$q \neq \text{NULL}$}{
+                        \If{$q.data < min.data$}{
+                            $min \gets q$\;
+                        }
+                        $q \gets q.next$\;
+                    }
+                    $\text{swap}(p.data, min.data)$\;
+                    $p \gets p.next$\;
+                }
+            }
+        \end{algorithm}
+    \end{frame}
+
+    \section{实验}
+
+    \subsection{约瑟夫环}
+    \begin{frame}
+        \frametitle{约瑟夫环}
+        \begin{itemize}
+            \item<1-> \textbf{思路：} 只需要一个循环链表，每次删除第 $m$ 个结点，直到链表为空
+            \item<2-> \textbf{实现：} 略
+            \item<3-> \textbf{优化：} 考虑到长度只有 $n$，而 $m$ 可能很大，可以通过取模运算优化
+            \item<4-> \textbf{bug：} 取模运算的结果可能为 $0$，需要特殊处理
+            \item<5-> \textbf{实现：} $m = (m-1)\%(n--)$+1;
+        \end{itemize}
+    \end{frame}
+
+    \subsection{串的模式匹配算法}
+    \begin{frame}
+        \frametitle{串的模式匹配算法}
+        \begin{algorithm}[H]
+            \caption{Next}
+            \SetKwFunction{Fmain}{Next}
+            \SetKwProg{Fn}{Function}{:}{}
+            \Fn{\Fmain{$s$, $t$}}{
+                $next[0] \gets -1$\;
+                $j \gets 0, k \gets -1$\;
+                \While{$j < t.length$}{
+                    \If{$k = -1$ or $t[j] = t[k]$}{
+                        $j \gets j+1, k \gets k+1$\;
+                        $next[j] \gets k$\;
+                    }
+                    \Else{
+                        $k \gets next[k]$\;
+                    }
+                }
+                \Return{$next$}\;
+            }
+        \end{algorithm}
+    \end{frame}
+    
+    \subsection{最小生成树问题}
+    \begin{frame}
+        \frametitle{最小生成树问题}
+        \begin{itemize}
+            \item Kruskal 算法
+            \item Prim 算法
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Kruskal 算法}
+        \begin{algorithm}[H]
+            \caption{Kruskal}
+            \SetKwFunction{Fmain}{Kruskal}
+            \SetKwProg{Fn}{Function}{:}{}
+            \Fn{\Fmain{$G$}}{
+                $E \gets \text{sort}(G.edges)$\;
+                $T \gets \text{NULL}$\;
+                \For{$i \gets 1$ \KwTo $G.vexnum$}{
+                    $parent[i] \gets i$\;
+                }
+                \For{$i \gets 1$ \KwTo $E.length$}{
+                    \If{$\text{Find}(E[i].u) \neq \text{Find}(E[i].v)$}{
+                        $T \gets T \cup \{E[i]\}$\;
+                        $\text{Union}(E[i].u, E[i].v)$\;
+                    }
+                }
+                \Return{$T$}\;
+            }
+        \end{algorithm}
+    \end{frame}
+    
+    \section{复习}
+
+    \subsection{图}
+    \begin{frame}
+        \frametitle{图}
+        \begin{block}{基本概念}
+            \begin{itemize}
+                \item<1-> 逻辑结构相关：
+                \begin{itemize}
+                    \item<2-> 顶点，边，度，路径，环，有向/无向图，图/网，生成树，搜索树
+                    \item<3-> 连通/强连通，拓扑排序，关键路径，最短路径，最小生成树
+                \end{itemize}
+                \item<4-> 存储结构相关：
+                \begin{itemize}
+                    \item<5-> 十字链表，邻接多重表，边表：给一个图，能写出各种存储结构
+                    \item<6-> 顶点数组+邻接表/邻接矩阵；在不同的场景下使用合适的存储结构，实现对问题的建模
+                    \item<7-> 顶点数组+逆邻接表
+                \end{itemize}
+            \end{itemize}
+        \end{block}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{图}
+        \begin{block}{基本操作}
+            \begin{itemize}
+                \item<1-> 遍历：深度优先搜索，广度优先搜索
+                \item<2-> 最短路径：Dijkstra 算法，Floyd 算法
+                \item<3-> 最小生成树：Prim 算法，Kruskal 算法
+                \item<4-> 拓扑排序：AOV 网，AOE 网
+                \item<5-> 关键路径：AOE 网
+            \end{itemize}
+        \end{block}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{图}
+        \begin{block}{7.9}
+            假设有向图以邻接表作为存储结构。试基于图的深度优先搜索策略写 一算 法，判断有向图中是否存在由顶点 $V_i$ 至顶点 $V_j(i\neq j)$的路径。
+        \end{block}
+        \begin{block}{}
+            假设有向图以邻接表作为存储结构。试基于图的广度优先搜索策略写 一算 法，判断有向图中是否存在由顶点 $V_i$ 至顶点 $V_j(i\neq j)$的路径。
+        \end{block}
+    \end{frame}
+
+    \subsection{查找表}
+    \begin{frame}
+        \frametitle{查找表}
+        \begin{block}{基本概念}
+            \begin{itemize}
+                \item<1-> 逻辑结构相关：
+                \begin{itemize}
+                    \item<2-> 静态、动态查找表
+                    \item<3-> 索引，关键字
+                    \item<4-> 平均查找长度
+                \end{itemize}
+                \item<5-> 存储结构相关：
+                \begin{itemize}
+                    \item<6-> 顺序表，有序表
+                    \item<7-> 二叉排序树，平衡二叉排序树，平衡因子
+                    \item<8-> 哈希查找表
+                \end{itemize}
+            \end{itemize}
+        \end{block}
+    \end{frame}
+
+
+    \begin{frame}
+        \frametitle{查找表}
+        \begin{block}{基本操作}
+            \begin{itemize}
+                \item<1-> 折半/二分查找
+                \item<2-> 分块查找
+                \item<3-> 二叉排序树的构造、插入、删除和查找
+                \item<4-> 平衡二叉排序树的构造，插入和删除
+                \item<5-> 哈希表的构造、插入和查找
+                \item<6-> 哈希表的冲突处理
+            \end{itemize}
+        \end{block}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{9.5}
+        已知关键字序列$\{10, 25,33,19,06,49,37,76,60\}$, 哈希地址空间为 $0\sim 10$, 哈希函数次 $H(Key) = Key\mod 11$, 求: \begin{enumerate}
+            \item 用开放定址线性探测法处理冲突，构造哈希表 $HT1$，分别计算在等概率情况下 $HT1$ 查找成功和查找失败的 $ASL$
+            \item 用开放定址二次探测法处理冲突，构造 $HT2$ 查找成功的 $ASL$
+            \item 用拉链法解决冲突，构造哈希表 $HT3$ 的 $ASL$
+        \end{enumerate}
+    \end{frame}
+
+
+    \begin{frame}
+        \frametitle{排序算法复杂度及稳定性}
+        \begin{tabular}{c | c  c  c  c  c}
+            \toprule
+            排序方法 & 最好 & 平均 & 最坏 & 空间复杂度 & 稳定性 \\
+            \midrule
+            直接插入排序 & $O(n)$ & $O(n^2)$ & $O(n^2)$ & $O(1)$ & 稳定 \\
+            希尔排序 & $O(n\log n)$ & $O(n(\log n)^2)$ & $O(n(\log n)^2)$ & $O(1)$ & 不稳定 \\
+            直接选择排序 & $O(n^2)$ & $O(n^2)$ & $O(n^2)$ & $O(1)$ & 不稳定 \\
+            堆排序 & $O(n\log n)$ & $O(n\log n)$ & $O(n\log n)$ & $O(1)$ & 不稳定 \\
+            冒泡排序 & $O(n)$ & $O(n^2)$ & $O(n^2)$ & $O(1)$ & 稳定 \\
+            快速排序 & $O(n\log n)$ & $O(n\log n)$ & $O(n^2)$ & $O(\log n)$ & 不稳定 \\
+            归并排序 & $O(n\log n)$ & $O(n\log n)$ & $O(n\log n)$ & $O(n)$ & 稳定 \\
+            基数排序 & $O(d(n+r))$ & $O(d(n+r))$ & $O(d(n+r))$ & $O(n+r)$ & 稳定 \\
+            \bottomrule
+        \end{tabular}
+    \end{frame}
+
+\end{document}
